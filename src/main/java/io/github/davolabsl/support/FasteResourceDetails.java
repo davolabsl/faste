@@ -4,6 +4,7 @@ import org.springframework.http.HttpMethod;
 
 /**
  * @author - Shehara
+ * @date - 1/29/2022
  */
 
 public class FasteResourceDetails<T> {

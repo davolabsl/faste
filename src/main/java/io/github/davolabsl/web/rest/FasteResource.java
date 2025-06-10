@@ -1,8 +1,9 @@
 package io.github.davolabsl.web.rest;
 
+import io.github.davolabsl.dao.support.FastPage;
 import io.github.davolabsl.support.RequestHandler;
 import io.github.davolabsl.support.ResourceConverter;
-import io.github.davolabsl.dao.support.Page;
+import io.github.davolabsl.web.rest.dto.FasteQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ import java.util.Map;
  * @param <ID> the type parameter
  */
 @RestController
-@RequestMapping("/faste/{resource}")
+@RequestMapping("/faste")
 @ConditionalOnProperty(value = "faste.rest.enabled")
 public class FasteResource<T, ID extends Serializable, K, V> {
 
@@ -37,7 +38,7 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      * @param entity   the entity
      * @return the response entity
      */
-    @PostMapping("/save")
+    @PostMapping("/{resource}/save")
     public ResponseEntity<T> save(@PathVariable("resource") String resource, @RequestBody T entity) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
         T response = (T) requestHandler.saveHandler(aClass, entity);
@@ -53,7 +54,7 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      * @param entities the entities
      * @return the response entity
      */
-    @PostMapping("/save/all")
+    @PostMapping("/{resource}/save/all")
     public ResponseEntity<T> saveAll(@PathVariable("resource") String resource, @RequestBody T entities) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
         T response = (T) requestHandler.saveAllHandler(aClass, entities);
@@ -69,7 +70,7 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      * @param id       the id
      * @return the response entity
      */
-    @GetMapping("/find/{id}")
+    @GetMapping("/{resource}/find/{id}")
     public ResponseEntity<T> findById(@PathVariable("resource") String resource, @PathVariable("id") ID id) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
         T response = (T) requestHandler.findByIdHandler(aClass, id);
@@ -86,7 +87,7 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      * @param id          the id
      * @return the response entity
      */
-    @GetMapping("/find/by/association/{association}/{id}")
+    @GetMapping("/{resource}/find/by/association/{association}/{id}")
     public ResponseEntity<T> findByAssociation(@PathVariable("resource") String resource, @PathVariable("association") String association, @PathVariable("id") ID id) {
         Class<?> mainEntity = resourceConverter.convertResourceToActualEntity(resource);
         Class<?> referenceEntity = resourceConverter.convertResourceToActualEntity(association);
@@ -102,7 +103,7 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      * @param resource the resource
      * @return the response entity
      */
-    @GetMapping("/find/all")
+    @GetMapping("/{resource}/find/all")
     public ResponseEntity<T> findAll(@PathVariable("resource") String resource) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
         T response = (T) requestHandler.findAllHandler(aClass);
@@ -119,13 +120,13 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      * @param size     the size
      * @return the response entity
      */
-    @GetMapping("/paginate")
-    public ResponseEntity<Page> paginate(@PathVariable("resource") String resource, @RequestParam("page") ID page, @RequestParam("size") ID size) {
+    @GetMapping("/{resource}/paginate")
+    public ResponseEntity<FastPage> paginate(@PathVariable("resource") String resource, @RequestParam("page") ID page, @RequestParam("size") ID size) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
-        Page pageResponse = requestHandler.paginateHandler(aClass, page, size);
+        FastPage fastPageResponse = requestHandler.paginateHandler(aClass, page, size);
 //        Map<String, Object> data = new HashMap<>();
 //        data.put("data", response);
-        return new ResponseEntity(pageResponse, HttpStatus.OK);
+        return new ResponseEntity(fastPageResponse, HttpStatus.OK);
     }
 
     /**
@@ -135,7 +136,7 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      * @param ids      the ids
      * @return the response entity
      */
-    @GetMapping("/find/all/in")
+    @GetMapping("/{resource}/find/all/in")
     public ResponseEntity<T> findAllByIds(@PathVariable("resource") String resource, @RequestParam("ids") ID[] ids) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
         T response = (T) requestHandler.findAllByIdsHandler(aClass, ids);
@@ -151,7 +152,7 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      * @param entity   the entity
      * @return the response entity
      */
-    @PutMapping("/update")
+    @PutMapping("/{resource}/update")
     public ResponseEntity<T> update(@PathVariable("resource") String resource, @RequestBody T entity) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
         T response = (T) requestHandler.updateHandler(aClass, entity);
@@ -165,10 +166,9 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      *
      * @param resource the resource
      * @param entity   the entity
-     * @param id  the id
      * @return the response entity
      */
-    @PutMapping("/dynamic/update/{id}")
+    @PutMapping("/{resource}/dynamic/update/{id}")
     public ResponseEntity<T> updateSelectedFields(@PathVariable("resource") String resource, @PathVariable("id") ID id, @RequestBody T entity) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
         T response = (T) requestHandler.dynamicUpdateHandler(aClass, entity, id);
@@ -184,7 +184,7 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      * @param entities the entities
      * @return the response entity
      */
-    @PutMapping("/update/all")
+    @PutMapping("/{resource}/update/all")
     public ResponseEntity<T> updateAll(@PathVariable("resource") String resource, @RequestBody T entities) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
         T response = (T) requestHandler.updateAllHandler(aClass, entities);
@@ -200,7 +200,7 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      * @param entity   the entity
      * @return the response entity
      */
-    @DeleteMapping("/delete")
+    @DeleteMapping("/{resource}/delete")
     public ResponseEntity<Void> delete(@PathVariable("resource") String resource, @RequestBody T entity) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
         requestHandler.deleteHandler(aClass, entity);
@@ -214,7 +214,7 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      * @param id       the id
      * @return the response entity
      */
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{resource}/delete/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable("resource") String resource, @PathVariable("id") ID id) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
         requestHandler.deleteByIdHandler(aClass, id);
@@ -227,7 +227,7 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      * @param resource the resource
      * @return the response entity
      */
-    @DeleteMapping("/delete/all")
+    @DeleteMapping("/{resource}/delete/all")
     public ResponseEntity<Void> deleteAll(@PathVariable("resource") String resource) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
         requestHandler.deleteAllHandler(aClass);
@@ -242,7 +242,7 @@ public class FasteResource<T, ID extends Serializable, K, V> {
      * @param fields   the fields
      * @return the response entity
      */
-    @GetMapping("/selected/find/{id}")
+    @GetMapping("/{resource}/selected/find/{id}")
     public ResponseEntity<Map> findSelectedFieldsById(@PathVariable("resource") String resource, @PathVariable("id") ID id, @RequestParam("fields") String[] fields) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
         Map response = requestHandler.findSelectedByIdHandler(aClass, id, fields);
@@ -251,10 +251,19 @@ public class FasteResource<T, ID extends Serializable, K, V> {
         return new ResponseEntity(data, HttpStatus.OK);
     }
 
-    @GetMapping("/selected/find/by")
+    @GetMapping("/{resource}/selected/find/by")
     public ResponseEntity<Object> findSelectedByGivenKeyValue(@PathVariable("resource") String resource, @RequestParam("keys") String[] keys, @RequestParam("values") String[] values, @RequestParam(value = "fields", required = false) String[] fields, @RequestParam(value = "conditions", required = false) String[] conditions, @RequestParam(value = "conditionSeparators", required = false) String[] conditionSeparators, @RequestParam(value = "orderBy", required = false) String[] orderBy, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "resultType", required = false) String resultType) {
         Class<?> aClass = resourceConverter.convertResourceToActualEntity(resource);
         Object response = requestHandler.findSelectedByGivenKeyValueHandler(aClass, keys, values, fields, conditions, conditionSeparators, page, size, resultType, orderBy);
+//        Map<String, Object> data = new HashMap<>();
+//        data.put("data", response);
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/advanced-search/{resource}")
+    public ResponseEntity<Object> advancedSearch(@RequestBody FasteQuery fasteQuery, @PathVariable("resource") String resource) {
+        Class<?> aClass = resourceConverter.convertResourceToActualEntity(fasteQuery.getFrom());
+        Object response = requestHandler.advancedSearch(aClass, fasteQuery);
 //        Map<String, Object> data = new HashMap<>();
 //        data.put("data", response);
         return new ResponseEntity(response, HttpStatus.OK);

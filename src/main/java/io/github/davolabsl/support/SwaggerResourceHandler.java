@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author - Shehara
+ * @date - 1/28/2022
  */
 
 @Component
@@ -74,7 +75,7 @@ public class SwaggerResourceHandler {
         if (optionalEntityType.isPresent()) {
             EntityType<?> entityType = optionalEntityType.get();
             Arrays.stream(entityType.getJavaType().getDeclaredFields()).forEach(field -> {
-                if (field.getType().getCanonicalName().startsWith("java.lang") || field.getType().getCanonicalName().startsWith("java.math") || field.getType().getCanonicalName().startsWith("java.util")) {
+                if (field.getType().getCanonicalName().startsWith("java.time") || field.getType().getCanonicalName().startsWith("java.lang") || field.getType().getCanonicalName().startsWith("java.math") || field.getType().getCanonicalName().startsWith("java.util")) {
                     if (!Collection.class.isAssignableFrom(field.getType())) {
                         if (httpMethod.equals(HttpMethod.POST)) {
                             if (!field.isAnnotationPresent(Id.class)) {
@@ -239,7 +240,7 @@ public class SwaggerResourceHandler {
             frd.setRequestDetails(requestDetail);
             return frd;
         } catch (Exception e) {
-            throw new FasteException("Unexpected error while processing", e);
+            throw new FasteException("", e);
         }
     }
 }

@@ -1,7 +1,7 @@
 package io.github.davolabsl.dao;
 
+import io.github.davolabsl.dao.support.FastPage;
 import io.github.davolabsl.dao.support.JpaDaoSupport;
-import io.github.davolabsl.dao.support.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.history.Revision;
 import org.springframework.data.history.Revisions;
@@ -72,7 +72,7 @@ public class JpaDao<T, ID extends Serializable, K, V> extends JpaDaoSupport<T, I
 
     @Override
     @Transactional(readOnly = true)
-    public Page<T> paginate(T entityClass, ID page, ID size) {
+    public FastPage<T> paginate(T entityClass, ID page, ID size) {
         return super.paginate(entityClass, page, size);
     }
 
@@ -117,8 +117,8 @@ public class JpaDao<T, ID extends Serializable, K, V> extends JpaDaoSupport<T, I
 
     @Override
     @Transactional(readOnly = true)
-    public Object findSelectedByGivenKeyValue(T entityClass, String[] keys, String[] values, String[] fields, String[] conditions, String[] conditionSeparators, Integer page, Integer size, String resultType, String[] orderBy) {
-        return super.findSelectedEntityFieldsByGivenKeyValue(entityClass, keys, values, fields, conditions, conditionSeparators, page, size, resultType, orderBy);
+    public Object findSelectedByGivenKeyValue(T entityClass, String[] keys, String[] values, String[] fields, String[] conditions, String[] conditionSeparators, Integer page, Integer size, String resultType, String[] orderBy, List<String> parentheses) {
+        return super.findSelectedEntityFieldsByGivenKeyValue(entityClass, keys, values, fields, conditions, conditionSeparators, page, size, resultType, orderBy, parentheses);
     }
 
     @Override

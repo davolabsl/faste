@@ -1,6 +1,6 @@
 package io.github.davolabsl.dao.support;
 
-public class Page<T> {
+public class FastPage<T> {
     private Integer page;
     private Integer perPage;
     private Long total;

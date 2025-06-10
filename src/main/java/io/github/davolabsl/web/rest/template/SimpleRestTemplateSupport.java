@@ -1,11 +1,10 @@
 package io.github.davolabsl.web.rest.template;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.davolabsl.dao.GenericDao;
-import io.github.davolabsl.dao.support.Page;
+import io.github.davolabsl.dao.support.FastPage;
 import io.github.davolabsl.web.rest.template.dto.ApiResponseDto;
 import io.github.davolabsl.web.rest.template.dto.PaginationDto;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +18,9 @@ public class SimpleRestTemplateSupport<MD, ME, RD, ID extends Serializable> {
 
     @Autowired
     private GenericDao genericDao;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public ApiResponseDto<RD> create(MD mainDto, ME mainEntity, RD responseDto) {
         ME me = mapDtoToEntity(mainDto, mainEntity);
@@ -46,7 +48,7 @@ public class SimpleRestTemplateSupport<MD, ME, RD, ID extends Serializable> {
     }
 
     public ApiResponseDto<List<RD>> paginate(ME mainEntity, RD responseDto, ID page, ID size) {
-        Page paginate = genericDao.paginate(mainEntity, page, size);
+        FastPage paginate = genericDao.paginate(mainEntity, page, size);
         List<ME> meList = (List<ME>) paginate.getResults();
         List<RD> collect = meList.stream().map(me -> mapEntityToDto(me, responseDto)).collect(Collectors.toList());
         ApiResponseDto<List<RD>> apiResponseDto = new ApiResponseDto<>();
@@ -77,10 +79,10 @@ public class SimpleRestTemplateSupport<MD, ME, RD, ID extends Serializable> {
     }
 
     private ME mapDtoToEntity(MD dto, ME entity) {
-        return (ME) new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).convertValue(dto, entity.getClass());
+        return (ME) objectMapper.convertValue(dto, entity.getClass());
     }
 
     private RD mapEntityToDto(ME entity, RD dto) {
-        return (RD) new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).convertValue(entity, dto.getClass());
+        return (RD) objectMapper.convertValue(entity, dto.getClass());
     }
 }

@@ -8,7 +8,7 @@ import java.io.Serializable;
  * The type Api response dto.
  *
  * @param <T> the type parameter
- * @author - Shehara
+ * @author Sujith T <p> <!In God We Trust>
  */
 @JsonIgnoreProperties
 public class ApiResponseDto<T> implements Serializable {

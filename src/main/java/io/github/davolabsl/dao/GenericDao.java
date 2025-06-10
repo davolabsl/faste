@@ -1,6 +1,6 @@
 package io.github.davolabsl.dao;
 
-import io.github.davolabsl.dao.support.Page;
+import io.github.davolabsl.dao.support.FastPage;
 
 import java.io.Serializable;
 import java.util.List;
@@ -86,7 +86,7 @@ public interface GenericDao<T, ID extends Serializable, K, V> {
      * @param size        the size
      * @return the page
      */
-    Page<T> paginate(T entityClass, ID page, ID size);
+    FastPage<T> paginate(T entityClass, ID page, ID size);
 
     /**
      * Update t.
@@ -140,17 +140,17 @@ public interface GenericDao<T, ID extends Serializable, K, V> {
     /**
      * Find selected by given key value object.
      *
-     * @param aClass     the a class
-     * @param keys       the keys
-     * @param values     the values
-     * @param fields     the fields
-     * @param conditions the conditions
-     * @param page       the page
-     * @param size       the size
-     * @param resultType resultType
-     * @param orderBy orderBy
-     * @param conditionSeparators conditionSeparators
+     * @param aClass      the a class
+     * @param keys        the keys
+     * @param values      the values
+     * @param fields      the fields
+     * @param conditions  the conditions
+     * @param page        the page
+     * @param size        the size
+     * @param resultType
+     * @param orderBy
+     * @param parentheses
      * @return the object
      */
-    Object findSelectedByGivenKeyValue(T aClass, String[] keys, String[] values, String[] fields, String[] conditions, String[] conditionSeparators, Integer page, Integer size, String resultType, String[] orderBy);
+    Object findSelectedByGivenKeyValue(T aClass, String[] keys, String[] values, String[] fields, String[] conditions, String[] conditionSeparators, Integer page, Integer size, String resultType, String[] orderBy, List<String> parentheses);
 }
